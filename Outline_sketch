@@ -1,0 +1,20 @@
+# Structure
+
+Key Message: We are 2 upcoming economics student who had their first touchpoint with data analysis during our studies. We’ll present how Aurélien introduced us to data analysis to absolute newcomers. 
+
+outline:
+
+Always explain how the topic got introduced in the course, and then show each step with our project. 
+
+- First introduction on why data analysis is important to economics
+- Data science pipeline
+- introduction on how computers work
+- Introduction to Data structures
+- Minna Heim (ETH) API Wrapper
+- Introduction to data cleaning and processing
+- Andrew Li (BiS) —> visualization of the cleaned data
+- Visualization of data
+
+Summary: 
+
+- Show key learnings from the course and how we’re still using the introduced pipeline in other courses. (Statistics, econometrics, macroeconomics, mathematical tools)
