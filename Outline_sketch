@@ -1,20 +1,23 @@
 # Structure
 
-Key Message: We are 2 upcoming economics student who had their first touchpoint with data analysis during our studies. We’ll present how Aurélien introduced us to data analysis to absolute newcomers. 
+1 Creative, interesting Hook to start the presentation (1min):
 
-outline:
+We all come across charts all the time, be it in newspapers, in textbooks, in our university courses and later in our careers. And for a long time, we mostly just looked at them, took them at face value and moved on. Some seemed clear, others confusing, but we didn’t really question why. It was only recently, through this course, that we started to understand what actually makes a visualization effective, what helps communicate a message clearly and what can easily mislead or confuse.
 
-Always explain how the topic got introduced in the course, and then show each step with our project. 
+2 Short Introduction (1min): 
 
-- First introduction on why data analysis is important to economics
-- Data science pipeline
-- introduction on how computers work
-- Introduction to Data structures
-- Minna Heim (ETH) API Wrapper
-- Introduction to data cleaning and processing
-- Andrew Li (BiS) —> visualization of the cleaned data
+We are two economics students who were first introduced to data analysis during our studies. In this presentation, we focus on data visualization and explain how Aurélien guided us from complete beginners to understanding not only the tools, but also how to present data in a clear and meaningful way, so that the message comes across clearly and convincingly.
+
+3 Outline (15min):
+
+- Short context of the data handling project 
+- Data science pipeline we've learned during the course
+
 - Visualization of data
+    - Tool (ggplot, layers, geoms and aesthetics)
+    - Principles (What makes a good visualization)
+    - Application (Real example visualisations and messages/insights from the data handling project)
 
-Summary: 
+4 Summary (1-2min): 
 
-- Show key learnings from the course and how we’re still using the introduced pipeline in other courses. (Statistics, econometrics, macroeconomics, mathematical tools)
+One of our key learnings from the course is the importance of data visualization, together with a structured data workflow. We now apply these skills in other courses such as statistics, econometrics and macroeconomics, and they also improve our ability to understand and critically interpret visualizations in sources like the Financial Times.
