@@ -1,42 +1,75 @@
-
-
 ---
 title: "Health Expenditure and Health Outcomes"
-subtitle: "Insights from Data Analysis"
-author: "Jonas Weber · Yann Rochaix"
-date: "4 June 2026"
+subtitle: "An Introductory course to Data Analysis"
+author: "Jonas Weber &  Yann Rochaix"
+date: "2026-06-04"
+date-format: "D MMMM YYYY"
 format: 
   revealjs:
-    theme: simple
-    slide-number: true
-    transition: fade
+    theme: [default, styles.scss] # Wir nutzen ein Standard-Theme + eigene Anpassungen
+    logo: images/HSG-Logo.png
+    footer: "Quantum Analytics Basel | June 2026"
+    slide-number: c/t             # Aktuelle Seite / Total
+    show-slide-number: all
+    transition: slide
+    background-transition: fade
+    embed-resources: true         # Erzeugt eine einzige HTML-Datei (leicht zu teilen)
+    code-line-numbers: true
+    code-copy: true
+    highlight-style: github
+    # Wichtig für den Fokus auf Visualisierung:
+    echo: true                    # Zeigt den Code standardmäßig an
+    warning: false                # Versteckt Warnungen im fertigen Slide
+    message: false                # Versteckt Lade-Meldungen von Paketen
 ---
 
-## 
-
-### Health Expenditure and Health Outcomes
-
-**Jonas Weber · Yann Rochaix**  
-Supervised by Dr. Aurélien Sallin  
-
-📍 Basel, Switzerland  
-📅 4 June 2026  
-Quantum Analytics Event
+```{r setup, include=FALSE}
+# Bibliotheken laden
+library(ggplot2)
+library(tidyverse)
 
 
-## Bullets
+# Globales Design für alle Plots setzen (Clean & Professional)
+theme_set(theme_minimal(base_size = 14) +
+          theme(panel.grid.minor = element_blank(),
+                plot.title = element_text(face = "bold"),
+                strip.text = element_text(face = "bold")))
 
-When you click the **Render** button a document will be generated that includes:
 
--   Content authored with markdown
--   Output from executable code
+highlight_color <- "#00802F"
 
-## Code
-
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
 ```
+
+
+## A Familiar Sight
+
+::: {.columns}
+
+::: {.column width="70%"}
+![](images/Bush-cuts-1.png){width="100%"}
+:::
+
+::: {.column width="30%"}
+::: {.fragment}
+### 
+We encounter charts like this every day in professional reports.
+:::
+
+::: {.fragment}
+**But look closer...**
+What exactly is wrong?
+::: 
+:::
+
+:::
+
+## Outline of the presentation
+* Bullet point
+
+
+## Slide 3
+* bullet point
+
+## slide 4
 
 
