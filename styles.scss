@@ -1,0 +1,43 @@
+/*-- scss:defaults --*/
+/* 1. NUR VARIABLEN HIER */
+$hsg-green: #00802F;
+$hsg-grey:  #3d3d3d;
+
+/* UI-Elemente */
+$progress-color: $hsg-green;
+$controls-color: $hsg-green;
+$selection-bg:   $hsg-green;
+$link-color:     $hsg-green;
+
+/* Standard-Font */
+$font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$presentation-heading-font: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
+
+/*-- scss:rules --*/
+/* 2. ALLE CSS-REGELN UND KLASSEN HIER */
+
+/* Hilfsklasse für weißen Text */
+.white-text {
+  color: white !important;
+}
+
+/* Titel-Styling */
+.reveal section h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid $hsg-green; /* Grün statt Grau für mehr HSG-Vibe */
+  padding-bottom: 10px;
+}
+
+
+
+/* Footer & Seitenzahlen */
+.reveal .footer {
+  font-size: 0.4em;
+  color: #7f8c8d;
+}
+
+.reveal .slide-number {
+  color: $hsg-green;
+  font-weight: bold;
+}

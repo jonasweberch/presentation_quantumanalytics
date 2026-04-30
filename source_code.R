@@ -13,122 +13,96 @@ library(dplyr)
 library(tidyverse)
 library(summarytools)
 library(ggplot2)
-library(qs)
 library(ggrepel)
 library(WDI)
 library(OECD)
 
+# WICHTIG: Für den ersten Durchlauf auf TRUE setzen!
+download_and_process <- F
 
-# Set flag to download and process data or read from cache
-download_and_process <- FALSE
 
 # CHAPTER 1 ---------------------------------
-# Chapter 1: Search for health expenditure indicators,
-# Download and preprocess World Bank health data
-
-
-# Search for relevant indicators related to health expenditure from the World Bank database
-indicators <- WDIsearch("health expenditure")
-head(indicators, 10) # Display the first 10 results
-
-
 if (download_and_process) {
-    # Download and preprocess World Bank health data
-    df_WorldBank_health <- WDI(
-        country = "all",
-        indicator = c(
-            "ind_WorldBank_health_gdp" = "SH.XPD.CHEX.GD.ZS", # Health expenditure as % of GDP
-            "ind_WorldBank_health_usd" = "SH.XPD.CHEX.PC.CD", # Health expenditure per capita (current US$)
-            "ind_WorldBank_health_pp" = "SH.XPD.CHEX.PP.CD", # Health expenditure per capita (PPP)
-            "ind_WorldBank_lifeexpectancy" = "SP.DYN.LE00.IN" # Life expectancy at birth (years)
-        ),
-        start = 2000,
-        end = 2024,
-        extra = TRUE
+  # Download and preprocess World Bank health data
+  df_WorldBank_health <- WDI(
+    country = "all",
+    indicator = c(
+      "ind_WorldBank_health_gdp" = "SH.XPD.CHEX.GD.ZS", 
+      "ind_WorldBank_health_usd" = "SH.XPD.CHEX.PC.CD", 
+      "ind_WorldBank_health_pp" = "SH.XPD.CHEX.PP.CD", 
+      "ind_WorldBank_lifeexpectancy" = "SP.DYN.LE00.IN" 
+    ),
+    start = 2000,
+    end = 2024,
+    extra = TRUE
+  ) |> as_tibble()
+  
+  # Remove aggregate regions from the dataset
+  df_WorldBank_health <- df_WorldBank_health |>
+    filter(region != "Aggregates")
+  
+  # Select relevant variables and clean the dataset
+  df_WorldBank_health <- df_WorldBank_health |>
+    select(
+      iso3c, year, income, country,
+      ind_WorldBank_health_gdp, ind_WorldBank_health_usd, ind_WorldBank_health_pp, ind_WorldBank_lifeexpectancy
     ) |>
-        as_tibble()
-
-    # Remove aggregate regions from the dataset
-    df_WorldBank_health <- df_WorldBank_health |>
-        filter(region != "Aggregates")
-
-    # Select relevant variables and clean the dataset
-    df_WorldBank_health <- df_WorldBank_health |>
-        select(
-            iso3c, year, income, country,
-            ind_WorldBank_health_gdp, ind_WorldBank_health_usd, ind_WorldBank_health_pp, ind_WorldBank_lifeexpectancy
-        ) |>
-        filter(iso3c != "") |>
-        rename(
-            country = iso3c,
-            country_name = country
-        )
-
-    # Explore countries with NA: many are high income
-    na_table <- df_WorldBank_health |>
-        group_by(income, country_name, country) |>
-        summarise(
-            number_years = n_distinct(year),
-            na_gdp = sum(is.na(ind_WorldBank_health_gdp)),
-            na_usd = sum(is.na(ind_WorldBank_health_usd)),
-            na_pp = sum(is.na(ind_WorldBank_health_pp)),
-            na_le = sum(is.na(ind_WorldBank_lifeexpectancy))
-        ) |>
-        filter(na_gdp > 0 | na_usd > 0 | na_pp > 0 | na_le > 0)
-
-    na_table
-
-    # Save data in cache as .qs
-    qsave(df_WorldBank_health, "Project_dh2025/data/wb_health.qs")
+    filter(iso3c != "") |>
+    rename(
+      country = iso3c,
+      country_name = country
+    )
+  
+  # Speicherordner sicherstellen (verhindert Fehler, falls der Ordner nicht existiert)
+  if(!dir.exists("Project_dh2025/data")) dir.create("Project_dh2025/data", recursive = TRUE)
+  
+  # Daten als .rds speichern
+  saveRDS(df_WorldBank_health, "Project_dh2025/data/wb_health.rds")
 }
 
 
 # CHAPTER 3 ---------------------------------
-# Chapter 3: Download and preprocess OECD health status data
-# Perceived health status
-
 if (download_and_process) {
-    # Download and preprocess OECD health status data
-    dataset_id_phs <- "OECD.ELS.HD,DSD_HEALTH_STAT@DF_PHS,1.0"
-
-    df_oecd_phs <- get_dataset(
-        dataset_id_phs,
-        start_time = 2000,
-        end_time = 2024
+  # Download and preprocess OECD health status data
+  dataset_id_phs <- "OECD.ELS.HD,DSD_HEALTH_STAT@DF_PHS,1.0"
+  
+  df_oecd_phs <- get_dataset(
+    dataset_id_phs,
+    start_time = 2000,
+    end_time = 2024
+  )
+  
+  # Filter for perceived health status
+  df_oecd_phs <- df_oecd_phs |>
+    filter(SEX == "_T") |> 
+    filter(AGE == "Y_GE15") |> 
+    filter(HEALTH_STATUS == "G") |>
+    filter(SOCIO_ECON_STATUS == "_Z")
+  
+  # Keep the relevant variables and values
+  df_oecd_phs <- df_oecd_phs |>
+    mutate(
+      TIME_PERIOD = as.integer(TIME_PERIOD),
+      ObsValue = as.numeric(ObsValue)
+    ) |>
+    select(REF_AREA, TIME_PERIOD, ObsValue) |>
+    rename(
+      country = REF_AREA,
+      year = TIME_PERIOD,
+      health_status_oecd = ObsValue
     )
-
-    # Filter for perceived health status
-    df_oecd_phs <- df_oecd_phs |>
-        filter(SEX == "_T") |> # all genders
-        filter(AGE == "Y_GE15") |> # aged 15 years old and over
-        filter(HEALTH_STATUS == "G") # who report their health to be ‘good/very good' (or excellent)
-
-    # We also focus on non-defined Socio-econ status
-    df_oecd_phs <- df_oecd_phs |>
-        filter(SOCIO_ECON_STATUS == "_Z")
-
-    # Keep the relevant variables and values
-    df_oecd_phs <- df_oecd_phs |>
-        mutate(
-            TIME_PERIOD = as.integer(TIME_PERIOD),
-            ObsValue = as.numeric(ObsValue)
-        ) |>
-        select(REF_AREA, TIME_PERIOD, ObsValue) |>
-        rename(
-            country = REF_AREA,
-            year = TIME_PERIOD,
-            health_status_oecd = ObsValue
-        )
-
-    # Save data in cache
-    qsave(df_oecd_phs, "Project_dh2025/data/oecd_phs.qs")
+  
+  # Daten als .rds speichern
+  saveRDS(df_oecd_phs, "Project_dh2025/data/oecd_phs.rds")
 }
 
 
+# LADE DATEN (Wenn Download auf FALSE steht)
 if (!download_and_process) {
-    df_WorldBank_health <- qread("Project_dh2025/data/wb_health.qs")
-    df_oecd_phs <- qread("Project_dh2025/data/oecd_phs.qs")
+  df_WorldBank_health <- readRDS("Project_dh2025/data/wb_health.rds")
+  df_oecd_phs <- readRDS("Project_dh2025/data/oecd_phs.rds")
 }
+
 
 
 
@@ -678,3 +652,4 @@ df_final |>
 
 
 # End of code
+
