@@ -4,8 +4,6 @@
 # This code is different than the one used for the official solution, because
 # it is adapted for the blog post.
 
-
-
 # CHAPTER 0 ---------------------------------
 
 # Load required libraries
@@ -18,7 +16,7 @@ library(WDI)
 library(OECD)
 
 # WICHTIG: Für den ersten Durchlauf auf TRUE setzen!
-download_and_process <- F
+download_and_process <- TRUE
 
 
 # CHAPTER 1 ---------------------------------
@@ -65,6 +63,11 @@ if (download_and_process) {
 if (download_and_process) {
   # Download and preprocess OECD health status data
   dataset_id_phs <- "OECD.ELS.HD,DSD_HEALTH_STAT@DF_PHS,1.0"
+  
+  
+  
+  
+  
   
   df_oecd_phs <- get_dataset(
     dataset_id_phs,

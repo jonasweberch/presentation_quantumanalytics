@@ -8,6 +8,7 @@ format:
   revealjs:
     theme: [default, styles.scss] # Wir nutzen ein Standard-Theme + eigene Anpassungen
     logo: images/HSG-Logo.png
+    smaller: true
     footer: "Quantum Analytics Basel | June 2026"
     slide-number: c/t             # Aktuelle Seite / Total
     show-slide-number: all
@@ -64,12 +65,96 @@ What exactly is wrong?
 :::
 
 ## Outline of the presentation
-* Bullet point
+
+- Context of the Data handling project  
+- Data visualization  
+  - Tools, principles and application  
+- Summary and key learnings 
 
 
-## Slide 3
-* bullet point
+## Context of the Data handling project  
 
-## slide 4
+- Introduction to programming for economics students (3rd semester)  
+- Relevance of data science skills in today’s world  
+- Data pipeline basics: importing, cleaning, transforming, visualizing 
+
+  ![](images/data_science_pipeline.png){width="50%"}
+  
+  
+
+
+
+## Data visualization - Tools
+<span style="color:#7f8c8d;">ggplot2</span>
+
+- **Layers** (build plots step by step)  
+- **Geoms** (visual representation: points, lines, bars)  
+- **Aesthetics** (mapping data to visual properties)  
+- **Facets** (split data into subplots)  
+
+## Data visualization - Tools
+<span style="color:#7f8c8d;">gtExtras</span>
+
+- Extension to the gt package for enhanced tables  
+- Adds visual elements (bars, icons, color scales)  
+- Makes tables more informative and easier to read  
+
+
+
+## Data visualization – Principles
+
+<span style="color:#7f8c8d;">Encoding of values</span>
+
+- Position relative to axes (line, scatter)
+- Size of area (bar, area)
+- Continuous vs. categorical → choose appropriate chart
+
+---
+
+## Data visualization – Principles
+
+<span style="color:#7f8c8d;">Clarity and integrity</span>
+
+- Avoid misleading representations (Lie factor)
+- Maximize data-to-ink ratio
+- Maintain appropriate data density
+
+---
+
+## Data visualization – Principles
+
+<span style="color:#7f8c8d;">Communication</span>
+
+- Fit the whole story into one graph (if possible)
+- Graph should be understandable without explanation
+
+---
+
+## Data visualization – Principles
+
+<span style="color:#7f8c8d;">Simplicity</span>
+
+- Avoid unnecessary visual elements
+- Avoid pie charts and 3D charts
+
+
+
+
+
+
+
+
+## Data visualization - Application
+
+- How have we applied these principles in our project? A few examples...
+
+
+## Summary and key learnings 
+
+- Importance of data visualization combined with a structured data workflow  
+- Application of these skills in other courses and improved ability to critically interpret visualizations
+
+
+
 
 

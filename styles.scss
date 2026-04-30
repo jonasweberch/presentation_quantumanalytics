@@ -3,6 +3,13 @@
 $hsg-green: #00802F;
 $hsg-grey:  #3d3d3d;
 
+.subtitle-grey {
+  color: var(--r-muted-color);
+  font-size: 0.7em;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
 /* UI-Elemente */
 $progress-color: $hsg-green;
 $controls-color: $hsg-green;
