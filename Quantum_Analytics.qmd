@@ -101,53 +101,116 @@ What exactly is wrong?
 
 
 
-## Data visualization – Principles
 
-<span style="color:#7f8c8d;">Encoding of values</span>
+## From Raw Data to Insight: Building a Clear Visualization
 
-- Position relative to axes (line, scatter)
-- Size of area (bar, area)
-- Continuous vs. categorical → choose appropriate chart
+- We want to visualize the relationship between health expenditure and life expectancy  
 
----
+- A correct plot is not enough → it must be clear and interpretable  
 
-## Data visualization – Principles
+- So how do we move from raw data to meaningful insight?  
 
-<span style="color:#7f8c8d;">Clarity and integrity</span>
+## Clear principles to avoid this
 
-- Avoid misleading representations (Lie factor)
-- Maximize data-to-ink ratio
-- Maintain appropriate data density
+![](images/nasty_plot.svg)
 
 ---
 
-## Data visualization – Principles
+## Step 1 — Raw encoding
 
-<span style="color:#7f8c8d;">Communication</span>
+![](images/plot_1.svg)
 
-- Fit the whole story into one graph (if possible)
-- Graph should be understandable without explanation
+
+- Position on axes is the most effective encoding
+- Scatterplot is appropriate for two continuous variables
+
+At this stage:
+
+- The chart is technically correct  
+- But it does not yet communicate a clear message  
 
 ---
 
-## Data visualization – Principles
+## Step 2 — Add clarity and context
 
-<span style="color:#7f8c8d;">Simplicity</span>
-
-- Avoid unnecessary visual elements
-- Avoid pie charts and 3D charts
+![](images/plot_2.svg)
 
 
 
+- Axes must be clearly labeled
+- A plot should be understandable without external explanation
+
+Improvement:
+
+- We add axis labels and a title  
+- The reader now understands what is shown  
+
+---
+
+## Step 3 — Reveal structure
+
+![](images/plot_3.svg)
 
 
 
+- Help the audience see patterns, not just data points
+
+Improvement:
+
+- Adding a trend line reveals the relationship  
+- We begin to see diminishing returns  
+
+---
+
+## Step 4 — Reduce visual noise
+
+![](images/plot_4.svg)
+
+- Avoid unnecessary visual elements: Maximize data-to-ink ratio  
 
 
-## Data visualization - Application
+Improvement:
 
-- How have we applied these principles in our project? A few examples...
+- Focus shifts to the data (through cleaner theme and subtle colors)
 
+---
+
+## Step 5 — Create focus
+
+![](images/plot_5.svg)
+
+
+
+- Not all data points are equally important: Use visual hierarchy to guide attention 
+
+Improvement:
+
+- Key countries (US, Switzerland) are highlighted  
+- The narrative begins to emerge  
+
+---
+
+## Step 6 — Tell the story
+
+![](images/plot_6.svg)
+
+
+
+- A good graph tells a complete story  
+- It should be interpretable without explanation  
+
+Improvement:
+
+- Selective labeling of relevant countries  
+- Strong, message-driven title  
+
+## Further Project Visualizations - 1 
+
+![](images/plot_example_1.svg)
+
+## Further Project Visualizations - 2
+
+![](images/plot_example_2.svg)
 
 ## Summary and key learnings 
 
