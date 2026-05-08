@@ -334,6 +334,7 @@ ggsave(
 
 
 
+
 # Create data for income group analysis
 data_income_groups <- df_final |>
   filter(income %in% income_groups) |>
@@ -976,7 +977,7 @@ ggplot(df_plot, aes(
 
 
 
-
+saveRDS(df_final, "df_final.rds")
 
 
 
