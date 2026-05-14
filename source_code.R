@@ -408,7 +408,7 @@ data_income_groups |>
     color = "Income group",
     caption = "Source: World Bank"
   ) +
-  theme_minimal()
+  theme_classic()
 
 
 

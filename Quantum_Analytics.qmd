@@ -65,7 +65,7 @@ df_final <- readRDS("df_final.rds")
 ::: fragment
 ### 
 
-We encounter charts like those every day in professional reports.
+We encounter charts like those every day.
 :::
 
 ::: fragment
@@ -571,14 +571,133 @@ df_final |>
 
 
 ## Further Project Visualizations - 1
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+data_income_groups <- readRDS("data_income_groups.rds")
+# Wir brauchen zwei kleine Hilfs-Datensätze für die Beschriftungen am Anfang (2000) und am Ende (2022)
+data_2000 <- data_income_groups |> filter(year == 2000)
+data_2022 <- data_income_groups |> filter(year == 2022)
 
-![](images/plot_example_1.svg)
+# Wir definieren die Farben, die im Bild verwendet wurden (ungefähr)
+custom_colors <- c("High income" = "#DE4A8D", 
+                   "Upper middle income" = "#7976B8", 
+                   "Lower middle income" = "#CC6B32", 
+                   "Low income" = "#4B9B79")
+
+# --- Der Plot ---
+data_income_groups |>
+  ggplot(aes(x = year, y = ind_WorldBank_health_ppp_mean, color = income)) +
+  geom_line(linewidth = 1.2) +
+  
+  # 1. Beschriftungen auf der LINKEN Seite (Werte für das Jahr 2000)
+  geom_text(data = data_2000, 
+            aes(label = round(ind_WorldBank_health_ppp_mean)), 
+            hjust = 1.3,      # Schiebt den Text leicht nach links neben den Startpunkt
+            fontface = "bold", 
+            size = 2.2) +
+  
+  # 2. Beschriftungen auf der RECHTEN Seite (Name + Jahr: Wert für 2022)
+  geom_text(data = data_2022, 
+            # \n macht einen Zeilenumbruch im Text
+            aes(label = paste0(income, "\n2022: ", round(ind_WorldBank_health_ppp_mean))), 
+            hjust = -0.1,     # Schiebt den Text leicht nach rechts neben den Endpunkt
+            fontface = "bold",
+            lineheight = 0.9, # Verringert den Zeilenabstand im Label
+            size = 2.2) +
+  
+  # 3. Eigene Farben anwenden
+  scale_color_manual(values = custom_colors) +
+  
+  # 4. Achsen anpassen (X-Achse verlängern, damit der Text rechts Platz hat!)
+  scale_x_continuous(limits = c(1998, 2026), breaks = seq(2000, 2020, by = 5)) +
+  scale_y_continuous(limits = c(0, NA)) + # Zwingt die Y-Achse, bei 0 zu starten
+  
+  # 5. Titel und Achsenbeschriftungen
+  labs(
+    title = "High-income countries spend much more per person on health than others.",
+    subtitle = "Income groups diverge in health spending: trends 2000-2022",
+    x = "Year (2000-2022)",
+    y = "Health Expenditure per Capita (PPP)",
+    caption = "Source: World Bank"
+  ) +
+  
+  # 6. Das Design (Theme) feintunen
+  theme_classic() +
+  theme(
+    legend.position = "none", # Legende komplett entfernen (wir haben ja jetzt Direct Labeling)
+    
+    # Horizontale graue Hilfslinien hinzufügen (theme_classic hat standardmäßig keine)
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.5), 
+    
+    # Titel-Formatierung
+    plot.title = element_text(face = "bold", size = 16, margin = margin(b = 8)),
+    plot.subtitle = element_text(color = "grey50", size = 13, margin = margin(b = 15)),
+    
+    # Textgrößen für die Achsen
+    axis.text = element_text(size = 11, color = "black"),
+    axis.title = element_text(size = 12),
+    
+    # Platz um den Plot herum schaffen (oben, rechts, unten, links), damit nichts abgeschnitten wird
+    plot.margin = margin(t = 20, r = 40, b = 20, l = 20) 
+  )
+```
+
+
 
 ## Further Project Visualizations - 2
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+df_oecd_status <- df_final |>
+  filter(!is.na(health_status_oecd)) |>
+  filter(year >= 2005 & year <= 2022) |>
+  group_by(year) |>
+  summarise(
+    avg_health_status = mean(health_status_oecd, na.rm = TRUE),
+    .groups = "drop"
+  )
 
-![](images/plot_example_2.svg)
+ggplot(df_oecd_status, aes(x = year, y = avg_health_status)) +
+  geom_line(size = 1.2, color = "#0072B2") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1, scale = 1), lim = c(60, 75)) +
+  labs(
+    subtitle = "Average perceived health status (OECD): 2005–2022",
+    title = "The share of respondents reporting 'good/very good' health \nin high income countries increased slowly in the past 20 years.",
+    x = "Year",
+    y = "Share reporting good/very good health",
+    caption = "Source: OECD"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 11, color = "grey30"),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    plot.margin = margin(5.5, 5.5, 5.5, 5.5)
+  )
+
+```
+
+
 
 ## Summary and key learnings
 
--   Importance of data visualization combined with a structured data workflow\
+:::: {.columns}
+
+:::{.column width = "50%"}
+
+![](images/Summary_keylearnings.png){width="100%"}
+:::
+
+::: {.column width = "50%"}
+-   Frist hands-on approach to data science
+-   Importance of data visualization in economics
+-   Clear workflow on how to visualize economic data
+-   What to avoid when creating graphs and diagrams
 -   Application of these skills in other courses and improved ability to critically interpret visualizations
+:::
+
+::::
