@@ -1,33 +1,38 @@
 ---
-title: "Health Expenditure and Health Outcomes"
-subtitle: "An Introductory course to Data Analysis"
+title: "Transforming Data into Insight"
+subtitle: "Learning to Make Real-World Data Interpretable and Engaging"
 author: "Jonas Weber &  Yann Rochaix"
 date: "2026-06-04"
 date-format: "D MMMM YYYY"
 format: 
   revealjs:
-    theme: [default, styles.scss] # Wir nutzen ein Standard-Theme + eigene Anpassungen
+    theme: [default, styles.scss] 
     logo: images/HSG-Logo.png
+    title-slide-attributes:
+      data-background-image: images/title_slide_background_image.png
+      data-background-size: cover
+      data-background-opacity: "0.2"
     smaller: true
     footer: "Quantum Analytics Basel | June 2026"
-    slide-number: c/t             # Aktuelle Seite / Total
+    slide-number: c/t            
     show-slide-number: all
     transition: slide
     background-transition: fade
-    embed-resources: true         # Erzeugt eine einzige HTML-Datei (leicht zu teilen)
+    embed-resources: true       
     code-line-numbers: true
     code-copy: true
-    highlight-style: github
-    # Wichtig für den Fokus auf Visualisierung:
-    echo: true                    # Zeigt den Code standardmäßig an
-    warning: false                # Versteckt Warnungen im fertigen Slide
-    message: false                # Versteckt Lade-Meldungen von Paketen
+    highlight-style: monokai
+   
+    echo: true                    
+    warning: false                
+    message: false               
 ---
 
 ```{r setup, include=FALSE}
-# Bibliotheken laden
+
 library(ggplot2)
 library(tidyverse)
+library(ggrepel)
 
 
 # Globales Design für alle Plots setzen (Clean & Professional)
@@ -41,170 +46,408 @@ highlight_color <- "#00802F"
 
 ```
 
-
 ## A Familiar Sight
 
-::: {.columns}
-
-::: {.column width="70%"}
+::::::: columns
+::: {.column width="49%"}
 ![](images/Bush-cuts-1.png){width="100%"}
 :::
 
-::: {.column width="30%"}
-::: {.fragment}
+::: {.column width="35%"}
+![](images/Yang_chart_bad.jpeg){width="100%" fig-align="center"}
+:::
+
+::: fragment
 ### 
-We encounter charts like this every day in professional reports.
+
+We encounter charts like those every day in professional reports.
 :::
 
-::: {.fragment}
-**But look closer...**
-What exactly is wrong?
-::: 
+::: fragment
+**But look closer...** What exactly is wrong?
 :::
-
-:::
+:::::::
 
 ## Outline of the presentation
 
-- Context of the Data handling project  
-- Data visualization  
-  - Tools, principles and application  
-- Summary and key learnings 
+-   Context of the Data handling project\
+-   Data visualization
+    -   Tools, principles and application\
+-   Summary and key learnings
 
+## Context of the Data Handling Project
 
-## Context of the Data handling project  
+:::::: columns
+::: {.column width="60%"}
+![](images/data_science_pipeline.png){width="100%"}
+:::
 
-- Introduction to programming for economics students (3rd semester)  
-- Relevance of data science skills in today’s world  
-- Data pipeline basics: importing, cleaning, transforming, visualizing 
+::: {.column width="36%"}
 
-  ![](images/data_science_pipeline.png){width="50%"}
-  
-  
+-   **Target Group**: Introduction course for economics students (3rd semester).
+-   **Motivation**: Relevance of data science skills in today’s world.
+:::
+::::::
 
+## From Raw Data to a clear Visualization
 
+- We want to visualize the relationship between **health expenditure** and **life expectancy**
 
-## Data visualization - Tools
-<span style="color:#7f8c8d;">ggplot2</span>
+::: {.columns}
 
-- **Layers** (build plots step by step)  
-- **Geoms** (visual representation: points, lines, bars)  
-- **Aesthetics** (mapping data to visual properties)  
-- **Facets** (split data into subplots)  
+::: {.column width="55%"}
+::: {.incremental}
+- A correct plot is not enough → it must be clear and interpretable
+- So how do we move from raw data to meaningful insight?
+:::
+:::
 
-## Data visualization - Tools
-<span style="color:#7f8c8d;">gtExtras</span>
+::: {.column width="45%"}
+![](images/sketch_data_to_plot.png){width="100%"}
+:::
 
-- Extension to the gt package for enhanced tables  
-- Adds visual elements (bars, icons, color scales)  
-- Makes tables more informative and easier to read  
-
-
-
-
-## From Raw Data to Insight: Building a Clear Visualization
-
-- We want to visualize the relationship between health expenditure and life expectancy  
-
-- A correct plot is not enough → it must be clear and interpretable  
-
-- So how do we move from raw data to meaningful insight?  
-
+:::
 ## Clear principles to avoid this
 
 ![](images/nasty_plot.svg)
 
----
+## Data visualization - layers
 
-## Step 1 — Raw encoding
+:::::: columns
+::: {.column width="45%"}
+![](images/Layers_visualization_ggplot2.jpeg){width="100%"}
+:::
 
-![](images/plot_1.svg)
+:::: {.column width="55%" style="font-size: 0.75em; padding-left: 20px;"}
+::: incremental
+-   **Data**: Start with your raw data (e.g., World Bank RDS).
+-   **Aesthetics**: Map variables to axes, colors, and sizes.
+-   **Geometries**: Choose shapes (points, bars, lines).
+-   **Facets**: Split data into subplots (e.g., by region).
+-   **Statistics**: Add models like regression lines.
+-   **Coordinates**: Adjust the coordinate system or zoom.
+-   **Theme**: Final styling (fonts, colors, HSG branding).
+:::
+::::
+::::::
 
 
-- Position on axes is the most effective encoding
-- Scatterplot is appropriate for two continuous variables
+------------------------------------------------------------------------
+
+## Step 1 — Data
+```{r, echo=FALSE}
+df_final <- readRDS("df_final.rds")
+
+```
+```{r}
+head(df_final)
+tail(df_final)
+```
+
+
+
+## Step 2 - Aesthetics
+```{r}
+#| echo: false
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_usd, y = ind_WorldBank_lifeexpectancy)) +
+  geom_point()+ labs(x = NULL, y = NULL)
+```
+
+-   Position on axes is the most effective encoding
+-   Scatterplot is appropriate for two continuous variables
 
 At this stage:
 
-- The chart is technically correct  
-- But it does not yet communicate a clear message  
+-   The chart is technically correct\
+-   But it does not yet communicate a clear message
 
----
+------------------------------------------------------------------------
 
-## Step 2 — Add clarity and context
+## Step 2 — Aesthetics
+```{r}
+#| echo: false
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_usd, y = ind_WorldBank_lifeexpectancy)) +
+  geom_point()
+```
 
-![](images/plot_2.svg)
-
-
-
-- Axes must be clearly labeled
-- A plot should be understandable without external explanation
-
-Improvement:
-
-- We add axis labels and a title  
-- The reader now understands what is shown  
-
----
-
-## Step 3 — Reveal structure
-
-![](images/plot_3.svg)
-
-
-
-- Help the audience see patterns, not just data points
+-   Axes must be clearly labeled
+-   A plot should be understandable without external explanation
 
 Improvement:
 
-- Adding a trend line reveals the relationship  
-- We begin to see diminishing returns  
+-   We add axis labels and a title\
+-   The reader now understands what is shown
 
----
+------------------------------------------------------------------------
 
-## Step 4 — Reduce visual noise
+## Step 3 - Geometries
 
-![](images/plot_4.svg)
+```{r}
+#| echo: false
+#| warning: false
 
-- Avoid unnecessary visual elements: Maximize data-to-ink ratio  
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
+  
+  # --- EBENE 3: GEOMETRIES ---
+  # Nur die Punkte! Die Transparenz (alpha) hilft uns bei Überlappungen.
+  geom_point(alpha = 0.6, color = "black", size = 2) +
+  
+  theme_minimal() +
+  labs(
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)"
+  )
+```
+- The plot is easier to read when working with different type of points
 
+------------------------------------------------------------------------
+
+## Step 4 - Facets
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+df_final %>%
+  # Wir filtern jetzt auf drei Jahre, um sie vergleichen zu können
+  filter(year %in% c(2020, 2021, 2022)) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
+  
+  # Geometries & Statistics aus dem vorherigen Schritt
+  geom_point(alpha = 0.6, color = "black", size = 1.5)+
+  
+  # --- EBENE 5: FACETS ---
+  # Teilt den Plot basierend auf dem Jahr in mehrere kleine Plots auf
+  facet_wrap(~ year) +
+  
+  # Das bekannte saubere Theme
+  theme_minimal() +
+  labs(
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)"
+  ) +
+  theme(
+    strip.text = element_text(face = "bold", size = 12) # Macht die Jahreszahlen über den Plots schön fett
+  )
+```
+
+- Doesn't make much sense to see a snapshot in time. 
+- We go back to the single chart :-)
+
+------------------------------------------------------------------------
+
+## Step 5 — Statistics
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
+  geom_point(alpha = 0.6, color = "#3288bd") + 
+  
+  # --- ANGEPASSTE TRENDLINIE ---
+  geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +  
+  
+  theme_minimal() +
+  labs(
+    title = "Health spending vs life expectancy",
+    x = "Health expenditure per capita (PPP)",
+    y = "Life expectancy (years)"
+  )
+```
+
+-   Help the audience see patterns, not just data points
 
 Improvement:
 
-- Focus shifts to the data (through cleaner theme and subtle colors)
+-   Adding a trend line reveals the relationship\
+-   We begin to see diminishing returns
 
----
+------------------------------------------------------------------------
 
-## Step 5 — Create focus
+## Step 6 — Coordinates
 
-![](images/plot_5.svg)
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
+  
+  # --- EBENE 3 & 4: GEOMETRIES & STATISTICS ---
+  # Die Punkte im exakten Blau des finalen Plots
+  geom_point(alpha = 0.8, color = "#3288bd", size = 2) + 
+  geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +
+  
+  # --- EBENE 5: COORDINATES ---
+  # Zwingt die Achsen exakt in den Bereich des Screenshots
+  scale_x_continuous(
+    limits = c(0, 13000),             # Plot-Bereich von 0 bis 13.000
+    breaks = seq(0, 12000, 4000)      # Striche bei 0, 4000, 8000, 12000
+  ) +
+  scale_y_continuous(
+    limits = c(0, 105),               # Plot-Bereich von 0 bis 105
+    breaks = seq(0, 100, 25)          # Striche bei 0, 25, 50, 75, 100
+  ) +
+  
+  # Das saubere Theme (weißer Hintergrund)
+  theme_minimal() +
+  labs(
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)"
+  ) +
+  theme(
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
 
 
-
-- Not all data points are equally important: Use visual hierarchy to guide attention 
+-   Avoid unnecessary visual elements: Maximize data-to-ink ratio
 
 Improvement:
 
-- Key countries (US, Switzerland) are highlighted  
-- The narrative begins to emerge  
+-   Focus shifts to the data (through cleaner theme and subtle colors)
 
----
+------------------------------------------------------------------------
 
-## Step 6 — Tell the story
+## Step 7 — Theme
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
 
-![](images/plot_6.svg)
+df_final |>
+  filter(year == 2022) |>
+  filter(country_name != "Central African Republic") |> # remove outlier with very low spending and life expectancy
+  select(
+    income,
+    country,
+    country_name,
+    ind_WorldBank_health_usd,
+    ind_WorldBank_health_pp,
+    ind_WorldBank_lifeexpectancy
+  ) |>
+  mutate(
+    label = if_else(
+      (ind_WorldBank_health_usd >
+         quantile(ind_WorldBank_health_usd, 0.9, na.rm = T) |
+         ind_WorldBank_health_usd <
+         quantile(ind_WorldBank_health_usd, 0.1, na.rm = T) |
+         ind_WorldBank_health_pp >
+         quantile(ind_WorldBank_health_pp, 0.9, na.rm = T) |
+         ind_WorldBank_health_pp <
+         quantile(ind_WorldBank_health_pp, 0.1, na.rm = T) |
+         ind_WorldBank_lifeexpectancy <
+         quantile(ind_WorldBank_lifeexpectancy, 0.1, na.rm = T) |
+         ind_WorldBank_lifeexpectancy >
+         quantile(ind_WorldBank_lifeexpectancy, 0.9, na.rm = T)) &
+        income %in% c("High income") &
+        country_name %in% c(
+          "Germany", "Finland", "Sweden", "Norway", "Italy", "Spain", "Portugal", "United Kingdom",
+          "Ireland", "Netherlands", "Poland", "Austria", "Belgium", "Denmark", "France",
+          "Greece", "Czech Republic", "Slovak Republic", "Hungary", "Luxembourg", "Iceland"
+        ),
+      country_name,
+      NA_character_
+    )
+  ) |>
+  ggplot(aes(
+    y = ind_WorldBank_lifeexpectancy,
+    x = ind_WorldBank_health_pp
+  )) +
+  geom_smooth(
+    method = "loess",
+    se = FALSE,
+    color = "grey50",
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
+  scale_y_continuous(limits = c(0, 100)) +
+  # Label outliers but exclude US and Switzerland (they are highlighted separately)
+  geom_text_repel(
+    data = . %>%
+      filter(
+        !is.na(label) & !(country_name %in% c("United States", "Switzerland"))
+      ),
+    aes(label = label),
+    size = 3,
+    color = "black",
+    segment.color = "grey80",
+    box.padding = 0.4,
+    max.overlaps = 20
+  ) +
+  # Highlight US and Switzerland with red points
+  geom_point(
+    data = df_final %>%
+      filter(
+        year == 2022 & country_name %in% c("United States", "Switzerland")
+      ),
+    aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy),
+    color = "#D55E00",
+    size = 3.3
+  ) +
+  # Highlight countries that illustrate the threshold effect
+  geom_text_repel(
+    data = df_final %>%
+      filter(year == 2022, country_name %in% c("United States", "Switzerland")),
+    aes(
+      x = ind_WorldBank_health_pp,
+      y = ind_WorldBank_lifeexpectancy,
+      label = country_name
+    ),
+    color = "#D55E00",
+    size = 3.8,
+    fontface = "bold",
+    box.padding = 0.65,
+    direction = "y",
+    max.overlaps = 20,
+    segment.color = "grey50",
+    show.legend = FALSE
+  ) +
+  labs(
+    title = "Twice the spending, same or lower life expectancy",
+    subtitle = "US and Switzerland spend about twice as much on health (PPP per capita, 2022) as \nother OECD countries with similar life expectancy",
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)",
+    caption = "Spending shown in PPP per capita (purchasing power parity: adjusted for price-level differences). \nSource: World Bank, 2022."
+  ) +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 11, color = "grey30"),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    plot.margin = margin(5.5, 5.5, 5.5, 5.5)
+  )
 
+```
 
-
-- A good graph tells a complete story  
-- It should be interpretable without explanation  
+-   Not all data points are equally important: Use visual hierarchy to guide attention
 
 Improvement:
 
-- Selective labeling of relevant countries  
-- Strong, message-driven title  
+-   Key countries (US, Switzerland) are highlighted\
+-   The narrative begins to emerge
 
-## Further Project Visualizations - 1 
+------------------------------------------------------------------------
+
+
+
+## Further Project Visualizations - 1
 
 ![](images/plot_example_1.svg)
 
@@ -212,12 +455,7 @@ Improvement:
 
 ![](images/plot_example_2.svg)
 
-## Summary and key learnings 
+## Summary and key learnings
 
-- Importance of data visualization combined with a structured data workflow  
-- Application of these skills in other courses and improved ability to critically interpret visualizations
-
-
-
-
-
+-   Importance of data visualization combined with a structured data workflow\
+-   Application of these skills in other courses and improved ability to critically interpret visualizations
