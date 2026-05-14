@@ -43,6 +43,9 @@ theme_set(theme_minimal(base_size = 14) +
 
 
 highlight_color <- "#00802F"
+```
+```{r, echo=FALSE}
+df_final <- readRDS("df_final.rds")
 
 ```
 
@@ -89,6 +92,10 @@ We encounter charts like those every day in professional reports.
 :::
 ::::::
 
+## Why data science in economics?
+![](images/Data_science_in_economics.png){width="60%"}
+
+
 ## From Raw Data to a clear Visualization
 
 - We want to visualize the relationship between **health expenditure** and **life expectancy**
@@ -110,6 +117,55 @@ We encounter charts like those every day in professional reports.
 ## Clear principles to avoid this
 
 ![](images/nasty_plot.svg)
+
+## And this
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(tidyr) # Wichtig: Wird gebraucht, um die Spalten umzuwandeln
+
+df_final %>%
+  # Nur die Schweiz und z.B. 2012 bis 2022 filtern
+  filter(country_name == "Switzerland" & year >= 2012 & year <= 2022) %>%
+  
+  # MAGIE: Wir nehmen alle Spalten, die mit "ind_" anfangen, und machen sie zu Kuchenstücken
+  pivot_longer(
+    cols = starts_with("ind_"), 
+    names_to = "Indicator", 
+    values_to = "Value"
+  ) %>%
+  
+  # Jetzt bauen wir den Kuchen: X ist leer, Y ist der Wert, die Farbe ist der Indikator
+  ggplot(aes(x = "", y = Value, fill = Indicator)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  
+  # Für jedes Jahr einen eigenen Kuchen
+  facet_wrap(~ year, ncol = 4) +
+  
+  # Blendet die unsinnigen Achsen aus
+  theme_void() +
+  
+  # Englische Beschriftungen
+  labs(
+    title = "Switzerland: Health Indicators by Year",
+    subtitle = "A catastrophic chart summing completely unrelated units.",
+    fill = "Indicator"
+  ) +
+  
+  # Das Design
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12, margin = margin(b = 10)),
+    legend.position = "bottom",
+    legend.text = element_text(size = 8),
+    legend.direction = "vertical" # Stapelt die Legende hässlich übereinander
+  )
+```
 
 ## Data visualization - layers
 
@@ -135,10 +191,6 @@ We encounter charts like those every day in professional reports.
 ------------------------------------------------------------------------
 
 ## Step 1 — Data
-```{r, echo=FALSE}
-df_final <- readRDS("df_final.rds")
-
-```
 ```{r}
 head(df_final)
 tail(df_final)
