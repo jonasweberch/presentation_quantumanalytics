@@ -33,6 +33,8 @@ format:
 library(ggplot2)
 library(tidyverse)
 library(ggrepel)
+library(dplyr)
+library(knitr)
 
 
 # Globales Design für alle Plots setzen (Clean & Professional)
@@ -43,6 +45,9 @@ theme_set(theme_minimal(base_size = 14) +
 
 
 highlight_color <- "#00802F"
+```
+```{r, echo=FALSE}
+df_final <- readRDS("df_final.rds")
 
 ```
 
@@ -54,13 +59,13 @@ highlight_color <- "#00802F"
 :::
 
 ::: {.column width="35%"}
-![](images/Yang_chart_bad.jpeg){width="100%" fig-align="center"}
+![](images/Trump_Biden.png){width="100%" fig-align="center"}
 :::
 
 ::: fragment
 ### 
 
-We encounter charts like those every day in professional reports.
+We encounter charts like those every day.
 :::
 
 ::: fragment
@@ -70,12 +75,53 @@ We encounter charts like those every day in professional reports.
 
 ## Outline of the presentation
 
--   Context of the Data handling project\
--   Data visualization
-    -   Tools, principles and application\
--   Summary and key learnings
+:::: {.columns}
 
-## Context of the Data Handling Project
+::: {.column width="50%"}
+- Why data science in economics?
+- Context of the Data handling project
+
+- Data visualization
+  - Goal
+  - What to avoid
+  - Tools and principles
+  - Application on health economics
+- Summary and key learnings
+:::
+
+::: {.column width="50%"}
+![](images/Outline_visualization.png){fig-align="center"}
+:::
+
+::::
+
+
+
+## Why data science in economics?
+
+:::: {.columns}
+
+::: {.column width = "50%"}
+
+![](images/Data_science_in_economics.png){width="100%"}
+:::
+
+:::{.column width = "50%"}
+
+- Loads of economic data
+- Use tools to explore data → R!
+- Make explorations in huge datasets
+- Create regressions for causal inference
+- Use ML to make predictions
+- Tell a story with data
+
+→ Here visualization plays a big role!
+
+:::
+
+::::
+
+## Context of the Data Handling project
 
 :::::: columns
 ::: {.column width="60%"}
@@ -89,9 +135,9 @@ We encounter charts like those every day in professional reports.
 :::
 ::::::
 
-## From Raw Data to a clear Visualization
+## The path to clear visualization
 
-- We want to visualize the relationship between **health expenditure** and **life expectancy**
+- We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
 
 ::: {.columns}
 
@@ -107,9 +153,58 @@ We encounter charts like those every day in professional reports.
 :::
 
 :::
-## Clear principles to avoid this
+## We want to avoid this
 
 ![](images/nasty_plot.svg)
+
+## Or this
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(tidyr) # Wichtig: Wird gebraucht, um die Spalten umzuwandeln
+
+df_final %>%
+  # Nur die Schweiz und z.B. 2012 bis 2022 filtern
+  filter(country_name == "Switzerland" & year >= 2012 & year <= 2022) %>%
+  
+  # MAGIE: Wir nehmen alle Spalten, die mit "ind_" anfangen, und machen sie zu Kuchenstücken
+  pivot_longer(
+    cols = starts_with("ind_"), 
+    names_to = "Indicator", 
+    values_to = "Value"
+  ) %>%
+  
+  # Jetzt bauen wir den Kuchen: X ist leer, Y ist der Wert, die Farbe ist der Indikator
+  ggplot(aes(x = "", y = Value, fill = Indicator)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  
+  # Für jedes Jahr einen eigenen Kuchen
+  facet_wrap(~ year, ncol = 4) +
+  
+  # Blendet die unsinnigen Achsen aus
+  theme_void() +
+  
+  # Englische Beschriftungen
+  labs(
+    title = "Switzerland: Health Indicators by Year",
+    subtitle = "A catastrophic chart summing completely unrelated units.",
+    fill = "Indicator"
+  ) +
+  
+  # Das Design
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12, margin = margin(b = 10)),
+    legend.position = "bottom",
+    legend.text = element_text(size = 8),
+    legend.direction = "vertical" # Stapelt die Legende hässlich übereinander
+  )
+```
 
 ## Data visualization - layers
 
@@ -134,19 +229,27 @@ We encounter charts like those every day in professional reports.
 
 ------------------------------------------------------------------------
 
-## Step 1 — Data
-```{r, echo=FALSE}
-df_final <- readRDS("df_final.rds")
-
-```
+## Step 1.1 — Data
 ```{r}
 head(df_final)
 tail(df_final)
 ```
 
+## Step 1.2 - Filtering data for 2022
+```{r, echo=TRUE}
+#| code-fold: true
+#| code-summary: "Show R Code"
+set.seed(42)
+df_final %>%
+  filter(year == 2022) %>%
+  select(Country = country_name, Income = income, `Health PPP` = ind_WorldBank_health_pp, `Life Exp.` = ind_WorldBank_lifeexpectancy) %>%
+  mutate(`Health PPP` = round(`Health PPP`, 0), `Life Exp.` = round(`Life Exp.`, 1)) %>%
+  slice_sample(n = 10) %>% 
+  kable()
+```
 
 
-## Step 2 - Aesthetics
+## Step 2.1 - Aesthetics
 ```{r}
 #| echo: false
 df_final %>%
@@ -165,26 +268,29 @@ At this stage:
 
 ------------------------------------------------------------------------
 
-## Step 2 — Aesthetics
+## Step 2.2 — Aesthetics
 ```{r}
 #| echo: false
+#| warning: false
 df_final %>%
   filter(year == 2022) %>%
   ggplot(aes(x = ind_WorldBank_health_usd, y = ind_WorldBank_lifeexpectancy)) +
-  geom_point()
+  geom_point()+
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)") +
+  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))  
 ```
 
 -   Axes must be clearly labeled
--   A plot should be understandable without external explanation
-
-Improvement:
-
 -   We add axis labels and a title\
 -   The reader now understands what is shown
+-   But no clear understanding of data points
 
 ------------------------------------------------------------------------
 
-## Step 3 - Geometries
+## Step 3.1 - Geometries
 
 ```{r}
 #| echo: false
@@ -198,13 +304,39 @@ df_final %>%
   # Nur die Punkte! Die Transparenz (alpha) hilft uns bei Überlappungen.
   geom_point(alpha = 0.6, color = "black", size = 2) +
   
-  theme_minimal() +
-  labs(
-    x = "Health expenditure per capita (PPP)",
-    y = "Life Expectancy at Birth (years)"
-  )
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)")+
+  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
 ```
-- The plot is easier to read when working with different type of points
+- Reduce opacity of data points to show the concentration 
+
+## Step 3.2 - Variation → Show income groups
+```{r}
+#| echo: false
+#| warning: false
+
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, 
+             y = ind_WorldBank_lifeexpectancy, 
+             shape = income,
+             color = income)) + 
+  
+  # --- EBENE 3: GEOMETRIES ---
+  geom_point(alpha = 0.6, size = 2) +
+  
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure (2022)",
+       subtitle = "Colored and Shaped by Income Group",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)",
+       color = "Income Group",   # Titel für die Farbe
+       shape = "Income Group") + # EXAKT DERSELBE Titel für die Form
+  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
+```
+
 
 ------------------------------------------------------------------------
 
@@ -227,18 +359,18 @@ df_final %>%
   facet_wrap(~ year) +
   
   # Das bekannte saubere Theme
-  theme_minimal() +
-  labs(
-    x = "Health expenditure per capita (PPP)",
-    y = "Life Expectancy at Birth (years)"
-  ) +
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)") +
   theme(
-    strip.text = element_text(face = "bold", size = 12) # Macht die Jahreszahlen über den Plots schön fett
+    strip.text = element_text(face = "bold", size = 12),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)
   )
 ```
 
-- Doesn't make much sense to see a snapshot in time. 
-- We go back to the single chart :-)
+- Doesn't make sense in our case to see a snapshot in time. 
+- We go back to one single chart :-)
 
 ------------------------------------------------------------------------
 
@@ -259,19 +391,17 @@ df_final %>%
   # --- ANGEPASSTE TRENDLINIE ---
   geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +  
   
-  theme_minimal() +
-  labs(
-    title = "Health spending vs life expectancy",
-    x = "Health expenditure per capita (PPP)",
-    y = "Life expectancy (years)"
-  )
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)")+
+  theme(axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
 ```
 
 -   Help the audience see patterns, not just data points
-
-Improvement:
-
--   Adding a trend line reveals the relationship\
+-   Adding a trend line reveals the relationship
 -   We begin to see diminishing returns
 
 ------------------------------------------------------------------------
@@ -304,23 +434,19 @@ df_final %>%
   ) +
   
   # Das saubere Theme (weißer Hintergrund)
-  theme_minimal() +
-  labs(
-    x = "Health expenditure per capita (PPP)",
-    y = "Life Expectancy at Birth (years)"
-  ) +
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)") +
   theme(
     axis.title = element_text(size = 12),
-    axis.text = element_text(size = 10)
+    axis.text = element_text(size = 10),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)
   )
 ```
 
-
--   Avoid unnecessary visual elements: Maximize data-to-ink ratio
-
-Improvement:
-
--   Focus shifts to the data (through cleaner theme and subtle colors)
+- Shift the data points more to the center of the diagram
+- Improves readability
 
 ------------------------------------------------------------------------
 
@@ -437,25 +563,141 @@ df_final |>
 ```
 
 -   Not all data points are equally important: Use visual hierarchy to guide attention
+-   Extensive description added to make the diagram self explanatory
 
-Improvement:
-
--   Key countries (US, Switzerland) are highlighted\
--   The narrative begins to emerge
 
 ------------------------------------------------------------------------
 
 
 
 ## Further Project Visualizations - 1
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+data_income_groups <- readRDS("data_income_groups.rds")
+# Wir brauchen zwei kleine Hilfs-Datensätze für die Beschriftungen am Anfang (2000) und am Ende (2022)
+data_2000 <- data_income_groups |> filter(year == 2000)
+data_2022 <- data_income_groups |> filter(year == 2022)
 
-![](images/plot_example_1.svg)
+# Wir definieren die Farben, die im Bild verwendet wurden (ungefähr)
+custom_colors <- c("High income" = "#DE4A8D", 
+                   "Upper middle income" = "#7976B8", 
+                   "Lower middle income" = "#CC6B32", 
+                   "Low income" = "#4B9B79")
+
+# --- Der Plot ---
+data_income_groups |>
+  ggplot(aes(x = year, y = ind_WorldBank_health_ppp_mean, color = income)) +
+  geom_line(linewidth = 1.2) +
+  
+  # 1. Beschriftungen auf der LINKEN Seite (Werte für das Jahr 2000)
+  geom_text(data = data_2000, 
+            aes(label = round(ind_WorldBank_health_ppp_mean)), 
+            hjust = 1.3,      # Schiebt den Text leicht nach links neben den Startpunkt
+            fontface = "bold", 
+            size = 2.2) +
+  
+  # 2. Beschriftungen auf der RECHTEN Seite (Name + Jahr: Wert für 2022)
+  geom_text(data = data_2022, 
+            # \n macht einen Zeilenumbruch im Text
+            aes(label = paste0(income, "\n2022: ", round(ind_WorldBank_health_ppp_mean))), 
+            hjust = -0.1,     # Schiebt den Text leicht nach rechts neben den Endpunkt
+            fontface = "bold",
+            lineheight = 0.9, # Verringert den Zeilenabstand im Label
+            size = 2.2) +
+  
+  # 3. Eigene Farben anwenden
+  scale_color_manual(values = custom_colors) +
+  
+  # 4. Achsen anpassen (X-Achse verlängern, damit der Text rechts Platz hat!)
+  scale_x_continuous(limits = c(1998, 2026), breaks = seq(2000, 2020, by = 5)) +
+  scale_y_continuous(limits = c(0, NA)) + # Zwingt die Y-Achse, bei 0 zu starten
+  
+  # 5. Titel und Achsenbeschriftungen
+  labs(
+    title = "High-income countries spend much more per person on health than others.",
+    subtitle = "Income groups diverge in health spending: trends 2000-2022",
+    x = "Year (2000-2022)",
+    y = "Health Expenditure per Capita (PPP)",
+    caption = "Source: World Bank"
+  ) +
+  
+  # 6. Das Design (Theme) feintunen
+  theme_classic() +
+  theme(
+    legend.position = "none", # Legende komplett entfernen (wir haben ja jetzt Direct Labeling)
+    
+    # Horizontale graue Hilfslinien hinzufügen (theme_classic hat standardmäßig keine)
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.5), 
+    
+    # Titel-Formatierung
+    plot.title = element_text(face = "bold", size = 16, margin = margin(b = 8)),
+    plot.subtitle = element_text(color = "grey50", size = 13, margin = margin(b = 15)),
+    
+    # Textgrößen für die Achsen
+    axis.text = element_text(size = 11, color = "black"),
+    axis.title = element_text(size = 12),
+    
+    # Platz um den Plot herum schaffen (oben, rechts, unten, links), damit nichts abgeschnitten wird
+    plot.margin = margin(t = 20, r = 40, b = 20, l = 20) 
+  )
+```
+
+
 
 ## Further Project Visualizations - 2
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+df_oecd_status <- df_final |>
+  filter(!is.na(health_status_oecd)) |>
+  filter(year >= 2005 & year <= 2022) |>
+  group_by(year) |>
+  summarise(
+    avg_health_status = mean(health_status_oecd, na.rm = TRUE),
+    .groups = "drop"
+  )
 
-![](images/plot_example_2.svg)
+ggplot(df_oecd_status, aes(x = year, y = avg_health_status)) +
+  geom_line(size = 1.2, color = "#0072B2") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1, scale = 1), lim = c(60, 75)) +
+  labs(
+    subtitle = "Average perceived health status (OECD): 2005–2022",
+    title = "The share of respondents reporting 'good/very good' health \nin high income countries increased slowly in the past 20 years.",
+    x = "Year",
+    y = "Share reporting good/very good health",
+    caption = "Source: OECD"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 11, color = "grey30"),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    plot.margin = margin(5.5, 5.5, 5.5, 5.5)
+  )
+
+```
+
+
 
 ## Summary and key learnings
 
--   Importance of data visualization combined with a structured data workflow\
+:::: {.columns}
+
+:::{.column width = "50%"}
+
+![](images/Summary_keylearnings.png){width="100%"}
+:::
+
+::: {.column width = "50%"}
+-   Frist hands-on approach to data science
+-   Importance of data visualization in economics
+-   Clear workflow on how to visualize economic data
+-   What to avoid when creating graphs and diagrams
 -   Application of these skills in other courses and improved ability to critically interpret visualizations
+:::
+
+::::
