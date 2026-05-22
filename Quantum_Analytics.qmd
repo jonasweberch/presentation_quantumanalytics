@@ -58,12 +58,10 @@ df_final <- readRDS("df_final.rds")
 
 ::: {.column width="55%"}
 
-::: {.fragment}
-![](images/Marihuana-chart.png){height="280px" fig-align="center" style="margin-bottom: 1px;" }
-:::
-::: {.fragment}
-![](images/Trump_Biden.png){height="280px" fig-align="center" }
-:::
+<div style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+  <img src="images/Marihuana-chart.png" style="height: 280px; display: block;" />
+  <img src="images/Trump_Biden.png" style="height: 280px; display: block;" />
+</div>
 
 :::
 
