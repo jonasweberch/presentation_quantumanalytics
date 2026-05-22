@@ -744,3 +744,42 @@ ggplot(df_oecd_status, aes(x = year, y = avg_health_status)) +
 :::
 
 ::::
+
+
+
+
+## Q&A
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 5
+#| fig-align: "center"
+#| code-summary: "Show the R code"
+
+library(ggplot2)
+
+df_roast <- data.frame(
+  Category = c("Money R users save on software licenses", 
+               "Time Tableau users save by not writing code"),
+  Value = c(50, 50)
+)
+
+ggplot(df_roast, aes(x = "", y = Value, fill = Category)) +
+  geom_bar(stat = "identity", width = 1, color = "white", linewidth = 2) +
+  coord_polar("y", start = 0) +
+  # Tableau Orange vs. a typical R Dark Blue
+  scale_fill_manual(values = c("#f28e2b", "#4e79a7")) +
+  theme_void(base_size = 14) +
+  labs(
+    title = "In the end, everything balances out." 
+  ) +
+  theme(
+    plot.title = element_text(size = 32, face = "bold", hjust = 0.5, margin = margin(b=15)),
+    legend.position = "bottom",
+    legend.direction = "vertical",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 13)
+  )
+```
+
