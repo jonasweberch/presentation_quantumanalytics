@@ -52,37 +52,35 @@ df_final <- readRDS("df_final.rds")
 
 ```
 
-## A Familiar Sight
+## What is wrong with these graphs?
 
-::::::: columns
-::: {.column width="49%"}
-![](images/Bush-cuts-1.png){width="100%"}
+:::: {.columns}
+
+::: {.column width="55%"}
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
+  <img src="images/Marihuana-chart.png" style="height: 280px; display: block;" />
+  <img src="images/Trump_Biden.png" style="height: 280px; display: block;" />
+</div>
+
 :::
 
-::: {.column width="35%"}
-![](images/Trump_Biden.png){width="100%" fig-align="center"}
+::: {.column width="45%"}
+
+### Tell us what you see!
+Scan the QR code or go to **menti.com** (Code: 7816 4721)
+
+<div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'>
+  <iframe 
+    src='https://www.mentimeter.com/app/presentation/alw63empx9e2voy85anzbiiv2x4gyg4z/embed' 
+    style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;' 
+    allowfullscreen>
+  </iframe>
+</div>
+
 :::
 
-::: fragment
-### 
-
-We encounter charts like those every day.
-:::
-
-::: fragment
-**But look closer...** What exactly is wrong?
-:::
-:::::::
-
-## Live Survey: What is wrong with those charts?
-
-Please scan the QR code or go to slido.com and enter code #1234
-
-<iframe src="https://wall.sli.do/event/YOUR_EVENT_ID" width="100%" height="500px" style="border:none;"></iframe>
-
-![](images/Bush-cuts-1.png){width="100%"}
-
-![](images/Trump_Biden.png){width="100%" fig-align="center"}
+::::
 
 ## Outline of the presentation
 
@@ -105,6 +103,25 @@ Please scan the QR code or go to slido.com and enter code #1234
 :::
 
 ::::
+
+## Jonas Weber
+
+
+
+
+## Yann Rochaix
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 250px 250px; gap: 0; width: 100%; margin-top: -10px;">
+  
+  <div style="background-image: url('images/Yann-intro1.png'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/Yann-intro3.jpeg'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/Yann-intro2.png'); background-size: cover; background-position: 50% 50%; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/sportglobe.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; width: 100%; height: 100%;"></div>
+
+</div>
 
 
 
@@ -229,57 +246,6 @@ df_final %>%
     axis.text = element_text(color = "white", size = 12, angle = 45),
     axis.title = element_text(color = "cyan", size = 14, face = "bold"),
     legend.position = "bottom"
-  )
-```
-
-
-
-## Or this
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-
-library(ggplot2)
-library(dplyr)
-library(tidyr) # Wichtig: Wird gebraucht, um die Spalten umzuwandeln
-
-df_final %>%
-  # Nur die Schweiz und z.B. 2012 bis 2022 filtern
-  filter(country_name == "Switzerland" & year >= 2012 & year <= 2022) %>%
-  
-  # MAGIE: Wir nehmen alle Spalten, die mit "ind_" anfangen, und machen sie zu Kuchenstücken
-  pivot_longer(
-    cols = starts_with("ind_"), 
-    names_to = "Indicator", 
-    values_to = "Value"
-  ) %>%
-  
-  # Jetzt bauen wir den Kuchen: X ist leer, Y ist der Wert, die Farbe ist der Indikator
-  ggplot(aes(x = "", y = Value, fill = Indicator)) +
-  geom_bar(stat = "identity", width = 1, color = "white") +
-  coord_polar("y", start = 0) +
-  
-  # Für jedes Jahr einen eigenen Kuchen
-  facet_wrap(~ year, ncol = 4) +
-  
-  # Blendet die unsinnigen Achsen aus
-  theme_void() +
-  
-  # Englische Beschriftungen
-  labs(
-    title = "Switzerland: Health Indicators by Year",
-    subtitle = "A catastrophic chart summing completely unrelated units.",
-    fill = "Indicator"
-  ) +
-  
-  # Das Design
-  theme(
-    plot.title = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(size = 12, margin = margin(b = 10)),
-    legend.position = "bottom",
-    legend.text = element_text(size = 8),
-    legend.direction = "vertical" # Stapelt die Legende hässlich übereinander
   )
 ```
 
