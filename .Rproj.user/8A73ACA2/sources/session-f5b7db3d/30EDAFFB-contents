@@ -1,0 +1,20 @@
+---
+title: "Text Yann"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Why is this a fail?
+- The pie chart adds up to over 100% (51% + 34% + 43% = 128%).
+- Pie charts are supposed to show each segment’s part of the whole (adding up to 100%).
+- Without more context, we do not know why the time categories chosen were today, last year, and 1997.
+- It makes no sense to use a pie chart to show marijuana usage over 3 time periods.
+- Misleading category label: It says that 51% of Americans tried marijuana today, which makes it seem like there was a special event I missed.
+- Unless you know the date that the pie chart was posted, you won’t know what “today” or “last year” means.
+ 
