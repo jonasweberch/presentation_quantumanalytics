@@ -106,7 +106,17 @@ Scan the QR code or go to **menti.com** (Code: 7816 4721)
 
 ## Jonas Weber
 
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 250px 250px; gap: 0; width: 100%; margin-top: -10px;">
+  
+  <div style="background-image: url('images/Jonas-intro1.png'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/Jonas-intro3.png'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/Jonas-intro4.png'); background-size: cover; background-position: 50% 50%; width: 100%; height: 100%;"></div>
+  
+  <div style="background-image: url('images/Jonas-intro2.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; width: 100%; height: 100%;"></div>
 
+</div>
 
 
 ## Yann Rochaix
