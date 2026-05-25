@@ -6,6 +6,7 @@ date: "2026-06-04"
 date-format: "D MMMM YYYY"
 format: 
   revealjs:
+    resources: /images
     spotlight: true
     theme: [default, styles.scss] 
     logo: images/HSG-Logo.png
@@ -72,15 +73,25 @@ Scan the QR code or go to **menti.com** (Code: 7816 4721)
 
 <div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'>
   <iframe 
+    allowfullscreen='true' 
+    allowtransparency='true' 
+    frameborder='0' 
+    height='315' 
     src='https://www.mentimeter.com/app/presentation/alw63empx9e2voy85anzbiiv2x4gyg4z/embed' 
-    style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;' 
-    allowfullscreen>
+    style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' 
+    width='420'
+    data-preload>
   </iframe>
 </div>
 
 :::
 
 ::::
+
+##  {background-iframe="https://www.mentimeter.com/app/presentation/alw63empx9e2voy85anzbiiv2x4gyg4z/embed"}
+
+
+
 
 ## Outline of the presentation
 
