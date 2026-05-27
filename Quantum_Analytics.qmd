@@ -53,6 +53,13 @@ df_final <- readRDS("df_final.rds")
 
 ```
 
+## Quote
+
+#### “Most of us need to listen to the music to understand how beautiful it is. But often that’s how we present statistics: we just show the notes, we don’t play the music.” — Hans Rosling
+
+
+
+
 ## What is wrong with these graphs?
 
 :::: {.columns}
@@ -351,7 +358,7 @@ df_final %>%
 ```
 - Reduce opacity of data points to show the concentration 
 
-## Step 3.2 - Variation → Show income groups
+## Step 3.2 - Variation
 ```{r}
 #| echo: false
 #| warning: false
