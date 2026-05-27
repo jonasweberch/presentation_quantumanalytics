@@ -57,40 +57,15 @@ df_final <- readRDS("df_final.rds")
 
 :::: {.columns}
 
-::: {.column width="55%"}
-
-<div style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
-  <img src="images/Marihuana-chart.png" style="height: 280px; display: block;" />
-  <img src="images/Trump_Biden.png" style="height: 280px; display: block;" />
-</div>
-
+::: {.column width="50%"}
+![](images/Trump_Biden.png){fig-align="center" width="90%"}
 :::
 
-::: {.column width="45%"}
-
-### Tell us what you see!
-Scan the QR code or go to **menti.com** (Code: 7816 4721)
-
-<div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'>
-  <iframe 
-    allowfullscreen='true' 
-    allowtransparency='true' 
-    frameborder='0' 
-    height='315' 
-    src='https://www.mentimeter.com/app/presentation/alw63empx9e2voy85anzbiiv2x4gyg4z/embed' 
-    style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' 
-    width='420'
-    data-preload>
-  </iframe>
-</div>
-
+::: {.column width="50%"}
+![](images/Marihuana-chart.png){fig-align="center" width="110%"}
 :::
 
 ::::
-
-##  {background-iframe="https://www.mentimeter.com/app/presentation/alw63empx9e2voy85anzbiiv2x4gyg4z/embed"}
-
-
 
 
 ## Outline of the presentation
