@@ -80,15 +80,20 @@ df_final <- readRDS("df_final.rds")
 :::: {.columns}
 
 ::: {.column width="50%"}
-- Why data science in economics?
-- Context of the Data handling project
+
+- Personal introduction
+
+- Context of the course
+  - Data science in economics
+  - Data pipeline
 
 - Data visualization
-  - Goal
-  - What to avoid
-  - Tools and principles
-  - Application on health economics
-- Summary and key learnings
+  - Research question
+  - Building the chart step by step
+  - Further examples
+  
+- Q&A
+
 :::
 
 ::: {.column width="50%"}
@@ -130,60 +135,24 @@ df_final <- readRDS("df_final.rds")
 
 ## Why data science in economics?
 
-:::: {.columns}
 
-::: {.column width = "50%"}
+![](images/Data_science_in_economics.png){fig-align="center" .r-stretch}
 
-![](images/Data_science_in_economics.png){width="100%"}
-:::
 
-:::{.column width = "50%"}
 
-- Loads of economic data
-- Use tools to explore data → R!
-- Make explorations in huge datasets
-- Create regressions for causal inference
-- Use ML to make predictions
-- Tell a story with data
-
-→ Here visualization plays a big role!
-
-:::
-
-::::
 
 ## Context of the Data Handling project
 
-:::::: columns
-::: {.column width="60%"}
-![](images/data_science_pipeline.png){width="100%"}
-:::
+![](images/data_science_pipeline.png){fig-align="center" .r-stretch}
 
-::: {.column width="36%"}
-
--   **Target Group**: Introduction course for economics students (3rd semester).
--   **Motivation**: Relevance of data science skills in today’s world.
-:::
-::::::
 
 ## The path to clear visualization
 
-- We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
+- Goal: We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
 
-::: {.columns}
+![](images/sketch_data_to_plot.png){fig-align="center" .r-stretch}
 
-::: {.column width="55%"}
-::: {.incremental}
-- A correct plot is not enough → it must be clear and interpretable
-- So how do we move from raw data to meaningful insight?
-:::
-:::
 
-::: {.column width="45%"}
-![](images/sketch_data_to_plot.png){width="100%"}
-:::
-
-:::
 ## We want to avoid this
 ```{r}
 #| echo: false
@@ -304,13 +273,7 @@ df_final %>%
   geom_point()+ labs(x = NULL, y = NULL)
 ```
 
--   Position on axes is the most effective encoding
--   Scatterplot is appropriate for two continuous variables
 
-At this stage:
-
--   The chart is technically correct\
--   But it does not yet communicate a clear message
 
 ------------------------------------------------------------------------
 
@@ -329,10 +292,7 @@ df_final %>%
   theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))  
 ```
 
--   Axes must be clearly labeled
--   We add axis labels and a title\
--   The reader now understands what is shown
--   But no clear understanding of data points
+
 
 ------------------------------------------------------------------------
 
@@ -356,7 +316,7 @@ df_final %>%
        y = "Life Expectancy at Birth (years)")+
   theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
 ```
-- Reduce opacity of data points to show the concentration 
+
 
 ## Step 3.2 - Variation
 ```{r}
@@ -365,22 +325,38 @@ df_final %>%
 
 df_final %>%
   filter(year == 2022) %>%
-  ggplot(aes(x = ind_WorldBank_health_pp, 
-             y = ind_WorldBank_lifeexpectancy, 
-             shape = income,
-             color = income)) + 
-  
-  # --- EBENE 3: GEOMETRIES ---
-  geom_point(alpha = 0.6, size = 2) +
-  
+  ggplot(aes(
+    x = ind_WorldBank_health_pp,
+    y = ind_WorldBank_lifeexpectancy,
+    color = income
+  )) +
+
+  geom_point(alpha = 0.7, size = 2.5) +
+
+  scale_color_manual(values = c(
+    "Low income" = "#d73027",
+    "Lower middle income" = "#f46d43",
+    "Upper middle income" = "#a6d96a",
+    "High income" = "#1a9850"
+  )) +
+
   theme_classic() +
-  labs(title = "Life Expectancy vs. Health Expenditure (2022)",
-       subtitle = "Colored and Shaped by Income Group",
-       x = "Health expenditure per capita (PPP)",
-       y = "Life Expectancy at Birth (years)",
-       color = "Income Group",   # Titel für die Farbe
-       shape = "Income Group") + # EXAKT DERSELBE Titel für die Form
-  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
+
+  labs(
+    title = "Life Expectancy vs. Health Expenditure (2022)",
+    subtitle = "Colored by Income Group",
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)",
+    color = "Income Group"
+  ) +
+
+  theme(
+    panel.grid.major.y = element_line(
+      color = "grey90",
+      linewidth = 0.3
+    )
+  )
+
 ```
 
 
@@ -415,8 +391,7 @@ df_final %>%
   )
 ```
 
-- Doesn't make sense in our case to see a snapshot in time. 
-- We go back to one single chart :-)
+
 
 ------------------------------------------------------------------------
 
@@ -429,26 +404,66 @@ df_final %>%
 
 
 
-df_final %>%
-  filter(year == 2022) %>%
-  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
-  geom_point(alpha = 0.6, color = "#3288bd") + 
-  
-  # --- ANGEPASSTE TRENDLINIE ---
-  geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +  
-  
+df_plot <- df_final %>%
+  filter(year == 2022)
+
+# Daten duplizieren für zwei Facets
+df_facets <- bind_rows(
+  df_plot %>% mutate(model = "Linear Regression"),
+  df_plot %>% mutate(model = "LOESS Smoother")
+)
+
+ggplot(
+  df_facets,
+  aes(
+    x = ind_WorldBank_health_pp,
+    y = ind_WorldBank_lifeexpectancy
+  )
+) +
+
+  geom_point(alpha = 0.6, color = "black", size = 1.5) +
+
+  # Linear regression nur im ersten Facet
+  geom_smooth(
+    data = subset(df_facets, model == "Linear Regression"),
+    method = "lm",
+    se = FALSE,
+    color = "grey50",
+    linetype = "dashed"
+  ) +
+
+  # LOESS nur im zweiten Facet
+  geom_smooth(
+    data = subset(df_facets, model == "LOESS Smoother"),
+    method = "loess",
+    se = FALSE,
+    color = "grey50",
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~model) +
+
   theme_classic() +
-  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
-       x = "Health expenditure per capita (PPP)",
-       y = "Life Expectancy at Birth (years)")+
-  theme(axis.title = element_text(size = 12),
+
+  labs(
+    title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)"
+  ) +
+
+  theme(
+    strip.text = element_text(face = "bold", size = 12),
+    axis.title = element_text(size = 12),
     axis.text = element_text(size = 10),
-    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
+    panel.grid.major.y = element_line(
+      color = "grey90",
+      linewidth = 0.3
+    )
+  )
+
 ```
 
--   Help the audience see patterns, not just data points
--   Adding a trend line reveals the relationship
--   We begin to see diminishing returns
+
 
 ------------------------------------------------------------------------
 
@@ -491,12 +506,122 @@ df_final %>%
   )
 ```
 
-- Shift the data points more to the center of the diagram
-- Improves readability
+
 
 ------------------------------------------------------------------------
 
-## Step 7 — Theme
+## Step 7.1 — Theme
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+df_final |>
+  filter(year == 2022) |>
+  filter(country_name != "Central African Republic") |> # remove outlier with very low spending and life expectancy
+  select(
+    income,
+    country,
+    country_name,
+    ind_WorldBank_health_usd,
+    ind_WorldBank_health_pp,
+    ind_WorldBank_lifeexpectancy
+  ) |>
+  mutate(
+    label = if_else(
+      (ind_WorldBank_health_usd >
+         quantile(ind_WorldBank_health_usd, 0.9, na.rm = T) |
+         ind_WorldBank_health_usd <
+         quantile(ind_WorldBank_health_usd, 0.1, na.rm = T) |
+         ind_WorldBank_health_pp >
+         quantile(ind_WorldBank_health_pp, 0.9, na.rm = T) |
+         ind_WorldBank_health_pp <
+         quantile(ind_WorldBank_health_pp, 0.1, na.rm = T) |
+         ind_WorldBank_lifeexpectancy <
+         quantile(ind_WorldBank_lifeexpectancy, 0.1, na.rm = T) |
+         ind_WorldBank_lifeexpectancy >
+         quantile(ind_WorldBank_lifeexpectancy, 0.9, na.rm = T)) &
+        income %in% c("High income") &
+        country_name %in% c(
+          "Germany", "Finland", "Sweden", "Norway", "Italy", "Spain", "Portugal", "United Kingdom",
+          "Ireland", "Netherlands", "Poland", "Austria", "Belgium", "Denmark", "France",
+          "Greece", "Czech Republic", "Slovak Republic", "Hungary", "Luxembourg", "Iceland"
+        ),
+      country_name,
+      NA_character_
+    )
+  ) |>
+  ggplot(aes(
+    y = ind_WorldBank_lifeexpectancy,
+    x = ind_WorldBank_health_pp
+  )) +
+  geom_smooth(
+    method = "loess",
+    se = FALSE,
+    color = "grey50",
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
+  scale_y_continuous(limits = c(0, 100)) +
+  # Label outliers but exclude US and Switzerland (they are highlighted separately)
+  geom_text_repel(
+    data = . %>%
+      filter(
+        !is.na(label) & !(country_name %in% c("United States", "Switzerland"))
+      ),
+    aes(label = label),
+    size = 3,
+    color = "black",
+    segment.color = "grey80",
+    box.padding = 0.4,
+    max.overlaps = 20
+  ) +
+  # Highlight US and Switzerland with red points
+  geom_point(
+    data = df_final %>%
+      filter(
+        year == 2022 & country_name %in% c("United States", "Switzerland")
+      ),
+    aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy),
+    color = "#D55E00",
+    size = 3.3
+  ) +
+  # Highlight countries that illustrate the threshold effect
+  geom_text_repel(
+    data = df_final %>%
+      filter(year == 2022, country_name %in% c("United States", "Switzerland")),
+    aes(
+      x = ind_WorldBank_health_pp,
+      y = ind_WorldBank_lifeexpectancy,
+      label = country_name
+    ),
+    color = "#D55E00",
+    size = 3.8,
+    fontface = "bold",
+    box.padding = 0.65,
+    direction = "y",
+    max.overlaps = 20,
+    segment.color = "grey50",
+    show.legend = FALSE
+  ) +
+  labs(
+    title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+    x = "Health expenditure per capita (PPP)",
+    y = "Life Expectancy at Birth (years)",
+    caption = "Spending shown in PPP per capita (purchasing power parity: adjusted for price-level differences). \nSource: World Bank, 2022."
+  ) +
+  theme_classic() +
+  theme(
+    plot.subtitle = element_text(size = 11, color = "grey30"),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    plot.margin = margin(5.5, 5.5, 5.5, 5.5)
+  )
+
+```
+
+
+## Step 7.2 — So-what headline
 ```{r}
 #| echo: false
 #| warning: false
@@ -607,10 +732,6 @@ df_final |>
   )
 
 ```
-
--   Not all data points are equally important: Use visual hierarchy to guide attention
--   Extensive description added to make the diagram self explanatory
-
 
 ------------------------------------------------------------------------
 
@@ -729,24 +850,7 @@ ggplot(df_oecd_status, aes(x = year, y = avg_health_status)) +
 
 
 
-## Summary and key learnings
 
-:::: {.columns}
-
-:::{.column width = "50%"}
-
-![](images/Summary_keylearnings.png){width="100%"}
-:::
-
-::: {.column width = "50%"}
--   Frist hands-on approach to data science
--   Importance of data visualization in economics
--   Clear workflow on how to visualize economic data
--   What to avoid when creating graphs and diagrams
--   Application of these skills in other courses and improved ability to critically interpret visualizations
-:::
-
-::::
 
 
 
