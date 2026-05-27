@@ -480,7 +480,7 @@ df_final %>%
   
   # --- EBENE 3 & 4: GEOMETRIES & STATISTICS ---
   # Die Punkte im exakten Blau des finalen Plots
-  geom_point(alpha = 0.8, color = "#3288bd", size = 2) + 
+  geom_point(alpha = 0.6, color = "black", size = 2) + 
   geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +
   
   # --- EBENE 5: COORDINATES ---
