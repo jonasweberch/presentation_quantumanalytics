@@ -51,6 +51,9 @@ highlight_color <- "#00802F"
 ```{r, echo=FALSE}
 df_final <- readRDS("df_final.rds")
 
+df_final <- df_final %>%
+  filter(ind_WorldBank_lifeexpectancy >= 20)
+
 ```
 
 ## Quote
@@ -83,14 +86,12 @@ df_final <- readRDS("df_final.rds")
 
 - Personal introduction
 
-- Context of the course
-  - Data science in economics
-  - Data pipeline
+- Data pipeline
 
 - Data visualization
   - Research question
   - Building the chart step by step
-  - Further examples
+  - Key insights & further examples
   
 - Q&A
 
@@ -104,15 +105,50 @@ df_final <- readRDS("df_final.rds")
 
 ## Jonas Weber
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 250px 250px; gap: 0; width: 100%; margin-top: -10px;">
-  
-  <div style="background-image: url('images/Jonas-intro1.png'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
-  
-  <div style="background-image: url('images/Jonas-intro3.png'); background-size: cover; background-position: center; width: 100%; height: 100%;"></div>
-  
-  <div style="background-image: url('images/Jonas-intro4.png'); background-size: cover; background-position: 50% 50%; width: 100%; height: 100%;"></div>
-  
-  <div style="background-image: url('images/Jonas-intro2.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; width: 100%; height: 100%;"></div>
+<div style="
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 250px 250px;
+  gap: 0;
+  width: 100%;
+  margin-top: -10px;
+">
+
+  <div style="
+    background-image: url('images/Jonas-intro1.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  "></div>
+
+  <div style="
+    background-image: url('images/Jonas-intro3.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  "></div>
+
+  <div style="
+    background-image: url('images/military.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  "></div>
+
+  <div style="
+    background-image: url('images/Jonas-intro2.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  "></div>
 
 </div>
 
@@ -133,14 +169,6 @@ df_final <- readRDS("df_final.rds")
 
 
 
-## Why data science in economics?
-
-
-![](images/Data_science_in_economics.png){fig-align="center" .r-stretch}
-
-
-
-
 ## Context of the Data Handling project
 
 ![](images/data_science_pipeline.png){fig-align="center" .r-stretch}
@@ -148,7 +176,8 @@ df_final <- readRDS("df_final.rds")
 
 ## The path to clear visualization
 
-- Goal: We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
+- **Goal**: We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
+- **Hypothesis**: more spending → longer lives, but likely with diminishing returns
 
 ![](images/sketch_data_to_plot.png){fig-align="center" .r-stretch}
 
@@ -270,7 +299,12 @@ df_final %>%
 df_final %>%
   filter(year == 2022) %>%
   ggplot(aes(x = ind_WorldBank_health_usd, y = ind_WorldBank_lifeexpectancy)) +
-  geom_point()+ labs(x = NULL, y = NULL)
+  geom_point()+ labs(x = NULL, y = NULL) +
+  scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
+
 ```
 
 
@@ -289,7 +323,13 @@ df_final %>%
   labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
        x = "Health expenditure per capita (PPP)",
        y = "Life Expectancy at Birth (years)") +
-  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))  
+  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)) +
+  scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
+
+
 ```
 
 
@@ -314,7 +354,13 @@ df_final %>%
   labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
        x = "Health expenditure per capita (PPP)",
        y = "Life Expectancy at Birth (years)")+
-  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3))
+  theme(panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)) +
+  scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
+
+
 ```
 
 
@@ -355,7 +401,12 @@ df_final %>%
       color = "grey90",
       linewidth = 0.3
     )
-  )
+  ) +
+
+scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
 
 ```
 
@@ -388,7 +439,14 @@ df_final %>%
   theme(
     strip.text = element_text(face = "bold", size = 12),
     panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)
-  )
+  ) +
+
+scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
+
+
 ```
 
 
@@ -459,7 +517,11 @@ ggplot(
       color = "grey90",
       linewidth = 0.3
     )
-  )
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
+  ) 
 
 ```
 
@@ -490,8 +552,8 @@ df_final %>%
     breaks = seq(0, 12000, 4000)      # Striche bei 0, 4000, 8000, 12000
   ) +
   scale_y_continuous(
-    limits = c(0, 105),               # Plot-Bereich von 0 bis 105
-    breaks = seq(0, 100, 25)          # Striche bei 0, 25, 50, 75, 100
+    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
   ) +
   
   # Das saubere Theme (weißer Hintergrund)
@@ -516,9 +578,19 @@ df_final %>%
 #| warning: false
 #| message: false
 
+set.seed(123)
+
+label_countries <- df_final |>
+  filter(
+    year == 2022,
+    country_name != "Central African Republic"
+  ) |>
+  slice_sample(n = 20) |>
+  pull(country_name)
+
 df_final |>
   filter(year == 2022) |>
-  filter(country_name != "Central African Republic") |> # remove outlier with very low spending and life expectancy
+  filter(country_name != "Central African Republic") |>
   select(
     income,
     country,
@@ -527,34 +599,11 @@ df_final |>
     ind_WorldBank_health_pp,
     ind_WorldBank_lifeexpectancy
   ) |>
-  mutate(
-    label = if_else(
-      (ind_WorldBank_health_usd >
-         quantile(ind_WorldBank_health_usd, 0.9, na.rm = T) |
-         ind_WorldBank_health_usd <
-         quantile(ind_WorldBank_health_usd, 0.1, na.rm = T) |
-         ind_WorldBank_health_pp >
-         quantile(ind_WorldBank_health_pp, 0.9, na.rm = T) |
-         ind_WorldBank_health_pp <
-         quantile(ind_WorldBank_health_pp, 0.1, na.rm = T) |
-         ind_WorldBank_lifeexpectancy <
-         quantile(ind_WorldBank_lifeexpectancy, 0.1, na.rm = T) |
-         ind_WorldBank_lifeexpectancy >
-         quantile(ind_WorldBank_lifeexpectancy, 0.9, na.rm = T)) &
-        income %in% c("High income") &
-        country_name %in% c(
-          "Germany", "Finland", "Sweden", "Norway", "Italy", "Spain", "Portugal", "United Kingdom",
-          "Ireland", "Netherlands", "Poland", "Austria", "Belgium", "Denmark", "France",
-          "Greece", "Czech Republic", "Slovak Republic", "Hungary", "Luxembourg", "Iceland"
-        ),
-      country_name,
-      NA_character_
-    )
-  ) |>
   ggplot(aes(
     y = ind_WorldBank_lifeexpectancy,
     x = ind_WorldBank_health_pp
   )) +
+
   geom_smooth(
     method = "loess",
     se = FALSE,
@@ -562,56 +611,37 @@ df_final |>
     linetype = "dashed",
     linewidth = 0.5
   ) +
-  geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
-  scale_y_continuous(limits = c(0, 100)) +
-  # Label outliers but exclude US and Switzerland (they are highlighted separately)
+
+  geom_point(
+    alpha = 0.75,
+    color = "#0072B2",
+    size = 1.5
+  ) +
+
   geom_text_repel(
-    data = . %>%
-      filter(
-        !is.na(label) & !(country_name %in% c("United States", "Switzerland"))
-      ),
-    aes(label = label),
-    size = 3,
+    data = \(x) dplyr::filter(x, country_name %in% label_countries),
+    aes(label = country_name),
+    size = 2.7,
     color = "black",
     segment.color = "grey80",
-    box.padding = 0.4,
-    max.overlaps = 20
+    box.padding = 0.3,
+    max.overlaps = Inf
   ) +
-  # Highlight US and Switzerland with red points
-  geom_point(
-    data = df_final %>%
-      filter(
-        year == 2022 & country_name %in% c("United States", "Switzerland")
-      ),
-    aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy),
-    color = "#D55E00",
-    size = 3.3
+
+  scale_y_continuous(
+    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
   ) +
-  # Highlight countries that illustrate the threshold effect
-  geom_text_repel(
-    data = df_final %>%
-      filter(year == 2022, country_name %in% c("United States", "Switzerland")),
-    aes(
-      x = ind_WorldBank_health_pp,
-      y = ind_WorldBank_lifeexpectancy,
-      label = country_name
-    ),
-    color = "#D55E00",
-    size = 3.8,
-    fontface = "bold",
-    box.padding = 0.65,
-    direction = "y",
-    max.overlaps = 20,
-    segment.color = "grey50",
-    show.legend = FALSE
-  ) +
+
   labs(
     title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
     x = "Health expenditure per capita (PPP)",
     y = "Life Expectancy at Birth (years)",
     caption = "Spending shown in PPP per capita (purchasing power parity: adjusted for price-level differences). \nSource: World Bank, 2022."
   ) +
+
   theme_classic() +
+
   theme(
     plot.subtitle = element_text(size = 11, color = "grey30"),
     panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
@@ -674,7 +704,10 @@ df_final |>
     linewidth = 0.5
   ) +
   geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
-  scale_y_continuous(limits = c(0, 100)) +
+  scale_y_continuous(
+    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
+  ) +
   # Label outliers but exclude US and Switzerland (they are highlighted separately)
   geom_text_repel(
     data = . %>%
