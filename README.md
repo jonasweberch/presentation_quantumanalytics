@@ -1,3 +1,7 @@
+## Presentation link
+https://jonasweberch.github.io/presentation_quantumanalytics/
+
+
 ## Presentation: Data Visualization & Analytics Meetup (Basel)
 This repository contains the source code and assets for our upcoming presentation at the Quantum Analytics Meetup.
 
