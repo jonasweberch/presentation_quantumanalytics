@@ -23,3 +23,6 @@ As per the preparation plan, we are following these milestones:
 
 ## Version Control:
 - Git
+
+## Github-Page
+[Presentation Slides](https://jonasweberch.github.io/presentation_quantumanalytics/#/title-slide)
