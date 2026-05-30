@@ -354,7 +354,13 @@ df_final %>%
   scale_y_continuous(
     limits = c(0, 100),               # Plot-Bereich von 0 bis 90
     breaks = seq(0, 100, 25)          # Striche bei 50, 60 ...
-  ) 
+  ) +
+
+theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black")
+  )
 
 ```
 
@@ -603,8 +609,8 @@ df_final %>%
     breaks = seq(0, 12000, 4000)      # Striche bei 0, 4000, 8000, 12000
   ) +
   scale_y_continuous(
-    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
-    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
+    limits = c(0, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 90, 20)         # Striche bei 0, 20, 40..
   ) +
   
   # Das saubere Theme (weißer Hintergrund)
@@ -680,8 +686,8 @@ df_final |>
   ) +
 
   scale_y_continuous(
-    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
-    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
+    limits = c(0, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 90, 20)         # Striche bei 0, 20, 40..
   ) +
 
   labs(
@@ -756,8 +762,8 @@ df_final |>
   ) +
   geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
   scale_y_continuous(
-    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
-    breaks = seq(50, 90, 10)          # Striche bei 50, 60 ...
+    limits = c(0, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 90, 20)         # Striche bei 0, 20, 40..
   ) +
   # Label outliers but exclude US and Switzerland (they are highlighted separately)
   geom_text_repel(
