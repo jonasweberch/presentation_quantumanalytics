@@ -827,7 +827,7 @@ df_final |>
 
 
 
-## See the bigger picture - 1
+## See the bigger picture
 ```{r}
 #| echo: false
 #| warning: false
