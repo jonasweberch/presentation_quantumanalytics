@@ -227,7 +227,9 @@ df_final <- df_final %>%
 
 ## The path to clear visualization
 
-- **Goal**: We want to visualize the relationship between **health expenditure per capita (PPP)** and **life expectancy at Birth** in 2022. 
+- **Research question**: Does higher healthcare spending lead to better health outcomes?
+  - Healthcare spending (PPP-adjusted, USD, per capita)
+  - Life expectancy at birth as a proxy for health outcomes
 - **Hypothesis**: more spending → longer lives, but likely with diminishing returns
 
 ![](images/sketch_data_to_plot.png){fig-align="center" .r-stretch}
@@ -405,7 +407,7 @@ df_final %>%
   
   # --- EBENE 3: GEOMETRIES ---
   # Nur die Punkte! Die Transparenz (alpha) hilft uns bei Überlappungen.
-  geom_point(alpha = 0.6, color = "black", size = 2) +
+  geom_point(alpha = 0.6, color = "black", size = 2.2) +
   
   theme_classic() +
   labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
@@ -434,7 +436,7 @@ df_final %>%
     color = income
   )) +
 
-  geom_point(alpha = 0.7, size = 2.5) +
+  geom_point(alpha = 0.7, size = 2.2) +
 
   scale_color_manual(values = c(
     "Low income" = "#d73027",
@@ -482,7 +484,7 @@ df_final %>%
   ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
   
   # Geometries & Statistics aus dem vorherigen Schritt
-  geom_point(alpha = 0.6, color = "black", size = 1.5)+
+  geom_point(alpha = 0.6, color = "black", size = 2.2)+
   
   # --- EBENE 5: FACETS ---
   # Teilt den Plot basierend auf dem Jahr in mehrere kleine Plots auf
@@ -536,7 +538,7 @@ ggplot(
   )
 ) +
 
-  geom_point(alpha = 0.6, color = "black", size = 1.5) +
+  geom_point(alpha = 0.6, color = "black", size = 2.2) +
 
   # Linear regression nur im ersten Facet
   geom_smooth(
@@ -586,7 +588,7 @@ ggplot(
 
 ------------------------------------------------------------------------
 
-## Step 6 — Coordinates
+## Step 6.1 — Coordinates
 
 ```{r}
 #| echo: false
@@ -599,7 +601,7 @@ df_final %>%
   
   # --- EBENE 3 & 4: GEOMETRIES & STATISTICS ---
   # Die Punkte im exakten Blau des finalen Plots
-  geom_point(alpha = 0.6, color = "black", size = 2) + 
+  geom_point(alpha = 0.6, color = "black", size = 2.2) + 
   geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +
   
   # --- EBENE 5: COORDINATES ---
@@ -625,7 +627,58 @@ df_final %>%
   )
 ```
 
+## Step 6.2 — Coordinates
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+df_final %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy)) +
+  
+  # --- EBENE 3 & 4: GEOMETRIES & STATISTICS ---
+  # Die Punkte im exakten Blau des finalen Plots
+  geom_point(alpha = 0.6, color = "black", size = 2.2) + 
+  geom_smooth(method = "loess", se = FALSE, color = "grey50", linetype = "dashed") +
+  
+annotate(
+  "segment",
+  x = 200,
+  xend = 200,
+  y = 55,
+  yend = 85,
+  linewidth = 1.5,
+  colour = "#00802f",
+  arrow = arrow(
+    ends = "both",
+    length = unit(0.35, "cm")
+  )
+)+
+  
+  # --- EBENE 5: COORDINATES ---
+  # Zwingt die Achsen exakt in den Bereich des Screenshots
+  scale_x_continuous(
+    limits = c(0, 13000),             # Plot-Bereich von 0 bis 13.000
+    breaks = seq(0, 12000, 4000)      # Striche bei 0, 4000, 8000, 12000
+  ) +
+  scale_y_continuous(
+    limits = c(50, 90),               # Plot-Bereich von 0 bis 90
+    breaks = seq(0, 90, 15)         # Striche bei 0, 20, 40..
+  ) +
+  
+  # Das saubere Theme (weißer Hintergrund)
+  theme_classic() +
+  labs(title = "Life Expectancy vs. Health Expenditure per Capita (2022)",
+       x = "Health expenditure per capita (PPP)",
+       y = "Life Expectancy at Birth (years)") +
+  theme(
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3)
+  )
+```
 
 ------------------------------------------------------------------------
 
@@ -672,7 +725,7 @@ df_final |>
   geom_point(
     alpha = 0.75,
     color = "#0072B2",
-    size = 1.5
+    size = 2.2
   ) +
 
   geom_text_repel(
@@ -760,7 +813,7 @@ df_final |>
     linetype = "dashed",
     linewidth = 0.5
   ) +
-  geom_point(alpha = 0.75, color = "#0072B2", size = 1.5) +
+  geom_point(alpha = 0.75, color = "#0072B2", size = 2.2) +
   scale_y_continuous(
     limits = c(0, 90),               # Plot-Bereich von 0 bis 90
     breaks = seq(0, 90, 20)         # Striche bei 0, 20, 40..
@@ -786,7 +839,7 @@ df_final |>
       ),
     aes(x = ind_WorldBank_health_pp, y = ind_WorldBank_lifeexpectancy),
     color = "#D55E00",
-    size = 3.3
+    size = 3
   ) +
   # Highlight countries that illustrate the threshold effect
   geom_text_repel(
