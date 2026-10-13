@@ -2,7 +2,7 @@
 title: "Transforming Data into Insight"
 subtitle: "Learning to Make Real-World Data Interpretable and Engaging"
 author: "Jonas Weber &  Yann Rochaix"
-date: "2026-06-04"
+date: "2026-10-22"
 date-format: "D MMMM YYYY"
 format: 
   revealjs:
@@ -15,7 +15,7 @@ format:
       data-background-size: cover
       data-background-opacity: "0.2"
     smaller: true
-    footer: "Quantum Analytics Basel | June 2026"
+    footer: "Quantum Analytics Basel | October 2026"
     slide-number: c/t            
     show-slide-number: all
     transition: slide
@@ -114,24 +114,24 @@ df_final <- df_final %>%
 [— Hans Rosling]{.quote-author}
 :::
 
+
 ## What is wrong with these graphs?
 
-:::: {.columns}
+:::: {.columns style="display: flex; align-items: center; height: 540px;"}
 
-::: {.column width="50%"}
-![](images/Trump_Biden.png){fig-align="center" width="90%"}
+::: {.column width="44%"}
+![](images/Trump_Biden.png){fig-align="center" style="max-height: 520px; max-width: 100%; width: auto; height: auto; object-fit: contain;"}
 :::
 
-::: {.column width="50%"}
-![](images/Marihuana-chart.png){fig-align="center" width="110%"}
+::: {.column width="56%"}
+![](images/Marihuana-chart.png){fig-align="center" style="max-height: 520px; max-width: 100%; width: auto; height: auto; object-fit: contain;"}
 :::
 
 ::::
 
-
 ## Outline of the presentation
 
-:::: {.columns}
+:::: {.columns style="display: flex; align-items: center; height: 540px;"}
 
 ::: {.column width="50%"}
 
@@ -149,7 +149,7 @@ df_final <- df_final %>%
 :::
 
 ::: {.column width="50%"}
-![](images/Outline_visualization.png){fig-align="center"}
+![](images/Outline_visualization.png){fig-align="center" style="max-height: 500px; max-width: 100%; width: auto; height: auto; object-fit: contain;"}
 :::
 
 ::::
@@ -305,9 +305,10 @@ df_final %>%
 
 ## Data visualization - layers
 
-:::::: columns
+:::::: {.columns style="display: flex; align-items: center; height: 520px;"}
+
 ::: {.column width="45%"}
-![](images/Layers_visualization_ggplot2.jpeg){width="100%"}
+![](images/Layers_visualization_ggplot2.jpeg){height="480px" fig-align="center"}
 :::
 
 :::: {.column width="55%" style="font-size: 0.75em; padding-left: 20px;"}
@@ -316,11 +317,12 @@ df_final %>%
 -   **Aesthetics**: Map variables to type of chart.
 -   **Geometries**: Choose shapes (points, bars, lines).
 -   **Facets**: Split data into subplots (e.g. by income group).
--   **Statistics**: Add statistical models
+-   **Statistics**: Add statistical models.
 -   **Coordinates**: Adjust the coordinate system or zoom.
 -   **Theme**: Final styling (fonts, colors, title).
 :::
 ::::
+
 ::::::
 
 
